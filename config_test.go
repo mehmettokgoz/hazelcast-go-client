@@ -398,6 +398,20 @@ func TestValidateFlakeIDGeneratorConfig(t *testing.T) {
 	}
 }
 
+func TestCloneFlakeIDGeneratorConfig(t *testing.T) {
+	cfg := hazelcast.FlakeIDGeneratorConfig{
+		PrefetchCount:  50_000,
+		PrefetchExpiry: types.Duration(time.Minute * 2),
+	}
+	err := cfg.Validate()
+	if err != nil {
+		return
+	}
+	newCfg := cfg.Clone()
+	assert.True(t, reflect.DeepEqual(newCfg.PrefetchCount, cfg.PrefetchCount))
+	assert.True(t, reflect.DeepEqual(newCfg.PrefetchExpiry, cfg.PrefetchExpiry))
+}
+
 func TestConfig_AddFlakeIDGenerator(t *testing.T) {
 	testCases := []struct {
 		expectErr      error
